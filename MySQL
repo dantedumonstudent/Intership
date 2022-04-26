@@ -1,0 +1,89 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema OBIS_A_N
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema OBIS_A_N
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `OBIS_A_N` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `OBIS_A_N` ;
+
+-- -----------------------------------------------------
+-- Table `OBIS_A_N`.`blacklist_annotation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `OBIS_A_N`.`blacklist_annotation` (
+  `id` INT NOT NULL,
+  `blacklist_id` INT NOT NULL,
+  `annotation_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `blacklist_id`, `annotation_id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `blacklist_id_UNIQUE` (`blacklist_id` ASC) VISIBLE,
+  UNIQUE INDEX `annotation_id_UNIQUE` (`annotation_id` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `OBIS_A_N`.`annotation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `OBIS_A_N`.`annotation` (
+  `annotation_id` INT NOT NULL,
+  `type` VARCHAR(800) NULL DEFAULT NULL,
+  `comment` VARCHAR(2000) NULL DEFAULT NULL,
+  `environment` VARCHAR(800) NULL DEFAULT NULL,
+  `resolved_AphiaID` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`annotation_id`),
+  UNIQUE INDEX `annotation_id_UNIQUE` (`annotation_id` ASC) VISIBLE,
+  CONSTRAINT `fk_annotation_blacklist_annotation1`
+    FOREIGN KEY (`annotation_id`)
+    REFERENCES `OBIS_A_N`.`blacklist_annotation` (`annotation_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `OBIS_A_N`.`blacklist`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `OBIS_A_N`.`blacklist` (
+  `blacklist_id` INT NOT NULL,
+  `scientificname_original` VARCHAR(800) NULL DEFAULT NULL,
+  `scientificnameauthor_original` VARCHAR(800) NULL DEFAULT NULL,
+  `scientificname_clean` VARCHAR(800) NULL DEFAULT NULL,
+  `scientificnameauthor_clean` VARCHAR(800) NULL DEFAULT NULL,
+  `phylum` VARCHAR(800) NULL DEFAULT NULL,
+  `class` VARCHAR(800) NULL DEFAULT NULL,
+  `number_of_worms_matches` INT NULL DEFAULT NULL,
+  `worms_match_type` VARCHAR(800) NULL DEFAULT NULL,
+  `first_dataset` VARCHAR(800) NULL DEFAULT NULL,
+  `dataset_ids` INT NULL DEFAULT NULL,
+  `dataset_shortnames` VARCHAR(800) NULL DEFAULT NULL,
+  `dataset_urls` VARCHAR(800) NULL DEFAULT NULL,
+  `nodes` VARCHAR(800) NULL DEFAULT NULL,
+  `records` INT NULL DEFAULT NULL,
+  `required_fields_check` INT NULL DEFAULT NULL,
+  `resolved_name` VARCHAR(800) NULL DEFAULT NULL,
+  `OBIS_ID` INT NULL DEFAULT NULL,
+  `taxonomic group` VARCHAR(800) NULL DEFAULT NULL,
+  PRIMARY KEY (`blacklist_id`),
+  UNIQUE INDEX `blacklist_id_UNIQUE` (`blacklist_id` ASC) VISIBLE,
+  CONSTRAINT `fk_blacklist_blacklist_annotation1`
+    FOREIGN KEY (`blacklist_id`)
+    REFERENCES `OBIS_A_N`.`blacklist_annotation` (`blacklist_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
